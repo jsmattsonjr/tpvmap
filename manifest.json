@@ -1,0 +1,33 @@
+{
+  "name": "indieVelo Map Overlay",
+  "description": "Overlay indieVelo satellite image over activity maps",
+  "version": "2024.11.01",
+  "manifest_version": 3,
+  "content_scripts": [
+    {
+      "matches": [
+        "https://intervals.icu/*",
+        "https://www.strava.com/*",
+        "https://app.trainingpeaks.com/*",
+        "https://veloviewer.com/*"
+      ],
+      "js": ["./package/inject.js"]
+    }
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": ["package/overlay.js", "assets/indievelo.jpg"],
+      "matches": [
+        "https://intervals.icu/*",
+        "https://www.strava.com/*",
+        "https://app.trainingpeaks.com/*",
+        "https://veloviewer.com/*"
+      ]
+    }
+  ],
+  "icons": {
+    "16": "assets/logo-16.png",
+    "48": "assets/logo-48.png",
+    "128": "assets/logo-128.png"
+  }
+}
