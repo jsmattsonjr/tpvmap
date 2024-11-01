@@ -42,20 +42,35 @@
     overlay.setMap(map);
   }
   
-  if (globalThis.L?.Map?.addInitHook) {
+  function isLeafletMap(map) {
+    return map instanceof L.Map;
+  }
+
+  function isGoogleMap(map) {
+    return map instanceof google.maps.Map;
+  }
+
+  // Leaflet maps
+  if (globalThis.L?.Map) {
+
     L.Map.addInitHook(function() {
       addLeafletOverlay(this);
     });
+
+    if (globalThis?.localMap && isLeafletMap(localMap)) {
+      addLeafletOverlay(localMap);
+    } else {
+      const map = globalThis.pageView?.mapContext?.().map();
+      if (map) {
+        addLeafletOverlay(map);
+      }
+    }
   }
 
-  if (typeof localMap === 'object') {
-    addLeafletOverlay(localMap);
-  } else if (typeof svMap === 'object') {
-    addGoogleOverlay(svMap);
-  } else {
-    const map = globalThis.pageView?.mapContext?.().map();
-    if (map) {
-      addLeafletOverlay(map);
+  // Google maps
+  if (globalThis.google?.maps) {
+    if (globalThis?.svMap && isGoogleMap(svMap)) {
+      addGoogleOverlay(svMap);
     }
   }
 
