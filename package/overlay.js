@@ -22,6 +22,24 @@
   };
 
   /**
+   * Checks if a given map instance is a Leaflet map
+   * @param {any} map - The map instance to check
+   * @return {boolean} True if the map is a Leaflet map instance
+   */
+  function isLeafletMap(map) {
+    return map instanceof L.Map;
+  }
+
+  /**
+   * Checks if a given map instance is a Google map
+   * @param {any} map - The map instance to check
+   * @return {boolean} True if the map is a Google Maps instance
+   */
+  function isGoogleMap(map) {
+    return map instanceof google.maps.Map;
+  }
+
+  /**
    * Set to track which Leaflet maps have already been overlayed
    * @type {Set<number>}
    */
@@ -79,39 +97,6 @@
   }
 
   /**
-   * Checks if a given map instance is a Leaflet map
-   * @param {any} map - The map instance to check
-   * @return {boolean} True if the map is a Leaflet map instance
-   */
-  function isLeafletMap(map) {
-    return map instanceof L.Map;
-  }
-
-  /**
-   * Checks if a given map instance is a Google map
-   * @param {any} map - The map instance to check
-   * @return {boolean} True if the map is a Google Maps instance
-   */
-  function isGoogleMap(map) {
-    return map instanceof google.maps.Map;
-  }
-
-  if (globalThis.L?.Map) {
-    L.Map.addInitHook(function() {
-      addLeafletOverlay(this);
-    });
-
-    if (globalThis?.localMap && isLeafletMap(localMap)) {
-      addLeafletOverlay(localMap);
-    } else {
-      const map = globalThis.pageView?.mapContext?.().map();
-      if (map) {
-        addLeafletOverlay(map);
-      }
-    }
-  }
-
-  /**
    * Polls for the availability of the global svMap instance with
    * exponential backoff. Once the map is available and confirmed
    * to be a Google Maps instance, adds the overlay.
@@ -133,6 +118,23 @@
     }
   }
 
+  // Leaflet initialization
+  if (globalThis.L?.Map) {
+    L.Map.addInitHook(function() {
+      addLeafletOverlay(this);
+    });
+
+    if (globalThis?.localMap && isLeafletMap(localMap)) {
+      addLeafletOverlay(localMap);
+    } else {
+      const map = globalThis.pageView?.mapContext?.().map();
+      if (map) {
+        addLeafletOverlay(map);
+      }
+    }
+  }
+
+  // Google Maps initialization
   if (globalThis.google?.maps) {
     pollForSVMap();
   }
