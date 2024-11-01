@@ -5,21 +5,6 @@
  */
 (() => {
   /**
-   * Extracts the base URL from the current script's source
-   * @type {string}
-   */
-  const BASE_URL = document.currentScript.src.match('^[a-z-]+://.*/') ?? '';
-
-  /**
-   * Constructs a full URL by combining the base URL with the provided path
-   * @param {string} path - The path to append to the base URL
-   * @return {string} The complete URL
-   */
-  function getURL(path) {
-    return BASE_URL + path;
-  }
-
-  /**
    * Configuration object for the TrainingPeaks Virtual map overlay
    * @type {Object}
    * @property {string} url - URL of the overlay image
@@ -29,7 +14,7 @@
    * @property {number} west - Western boundary longitude
    */
   const tpVirtualMap = {
-    url: getURL('../assets/tpvirtual.jpg'),
+    url: document.currentScript.dataset.overlayUrl,
     north: -1.410449,
     south: -1.447183,
     east: 149.674004,
