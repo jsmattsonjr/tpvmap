@@ -10,11 +10,11 @@
    * source set to the extension's overlay script.
    * @type {HTMLScriptElement}
    */
-  const s = document.createElement("script");
-  s.type = "text/javascript";
+  const s = document.createElement('script');
+  s.type = 'text/javascript';
   s.dataset.overlayUrl = chrome.runtime.getURL(
-    "assets/tpvirtual.jpg"
+      'assets/tpvirtual.jpg',
   );
-  s.src = chrome.runtime.getURL("package/overlay.js");
+  s.src = chrome.runtime.getURL('package/overlay.js');
   document.body.appendChild(s);
 })();
