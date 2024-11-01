@@ -20,8 +20,10 @@
       return;
     }
     initializedLeafletIds.add(id);
-    const latLngBounds = [[tpVirtualMap.north, tpVirtualMap.west], [tpVirtualMap.south, tpVirtualMap.east]]
-    const imageOverlay = L.imageOverlay(tpVirtualMap.url, latLngBounds);
+    const latLngBounds = [[tpVirtualMap.north, tpVirtualMap.west], [tpVirtualMap.south, tpVirtualMap.east]];
+    const options = {zIndex: 0.1};
+    const imageOverlay = L.imageOverlay(tpVirtualMap.url,
+                                        latLngBounds, options);
     imageOverlay.addTo(map);
   }
 
