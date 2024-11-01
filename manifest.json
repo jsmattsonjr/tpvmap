@@ -1,6 +1,6 @@
 {
-  "name": "indieVelo Map Overlay",
-  "description": "Overlay indieVelo satellite image over activity maps",
+  "name": "TPVirtual Map Overlay",
+  "description": "Overlay TrainingPeaks Virtual satellite image over activity maps",
   "version": "2024.11.01",
   "manifest_version": 3,
   "content_scripts": [
@@ -16,7 +16,7 @@
   ],
   "web_accessible_resources": [
     {
-      "resources": ["package/overlay.js", "assets/indievelo.jpg"],
+      "resources": ["package/overlay.js", "assets/tpvirtual.jpg"],
       "matches": [
         "https://intervals.icu/*",
         "https://www.strava.com/*",

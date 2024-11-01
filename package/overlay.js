@@ -5,8 +5,8 @@
     return BASE_URL + path;
   }
 
-  const indieVeloMap = {
-    url: getURL('../assets/indievelo.jpg'),
+  const tpVirtualMap = {
+    url: getURL('../assets/tpvirtual.jpg'),
     north: -1.410449,
     south: -1.447183,
     east: 149.674004,
@@ -20,23 +20,23 @@
       return;
     }
     initializedLeafletIds.add(id);
-    const latLngBounds = [[indieVeloMap.north, indieVeloMap.west], [indieVeloMap.south, indieVeloMap.east]]
-    const imageOverlay = L.imageOverlay(indieVeloMap.url, latLngBounds);
+    const latLngBounds = [[tpVirtualMap.north, tpVirtualMap.west], [tpVirtualMap.south, tpVirtualMap.east]]
+    const imageOverlay = L.imageOverlay(tpVirtualMap.url, latLngBounds);
     imageOverlay.addTo(map);
   }
 
   function addGoogleOverlay(map) {
-    const overlay = new google.maps.GroundOverlay(indieVeloMap.url, {
-      north: indieVeloMap.north,
-      south: indieVeloMap.south,
-      east: indieVeloMap.east,
-      west: indieVeloMap.west
+    const overlay = new google.maps.GroundOverlay(tpVirtualMap.url, {
+      north: tpVirtualMap.north,
+      south: tpVirtualMap.south,
+      east: tpVirtualMap.east,
+      west: tpVirtualMap.west
     });
-    overlay.v_north = indieVeloMap.north;
-    overlay.v_south = indieVeloMap.south;
-    overlay.v_east = indieVeloMap.east;
-    overlay.v_west = indieVeloMap.west;
-    overlay.v_url = indieVeloMap.url;
+    overlay.v_north = tpVirtualMap.north;
+    overlay.v_south = tpVirtualMap.south;
+    overlay.v_east = tpVirtualMap.east;
+    overlay.v_west = tpVirtualMap.west;
+    overlay.v_url = tpVirtualMap.url;
     overlay.setMap(map);
   }
   
