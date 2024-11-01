@@ -3,7 +3,7 @@ Chrome extension: Overlay TrainingPeaks Virtual satellite image over activity ma
 Alpha quality. When it gets better, I'll submit it to the Chrome Web Store.
 
 Currently works well with Strava activities, but not the Strava feed.
-Also works well with VeloViewer segments, but is flaky with VeloViewer activities.
+Also works well with VeloViewer segmentsis and VeloViewer activities.
 Works well with intervals.icu activities.
 Ironically, does not work with TrainingPeaks activities.
 

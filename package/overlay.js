@@ -111,9 +111,29 @@
     }
   }
 
-  if (globalThis.google?.maps) {
+  /**
+   * Polls for the availability of the global svMap instance with
+   * exponential backoff. Once the map is available and confirmed
+   * to be a Google Maps instance, adds the overlay.
+   *
+   * @param {number} [retries=10] - Remaining polling attempts
+   * @param {number} [delay=100] - Delay between polling attempts,
+   * in milliseconds; increases by 50% with each retry
+   * @return {void}
+   */
+  function pollForSVMap(retries = 10, delay = 100) {
     if (globalThis?.svMap && isGoogleMap(svMap)) {
       addGoogleOverlay(svMap);
+      return;
     }
+    if (retries > 0) {
+      setTimeout(() => {
+        pollForSVMap(retries - 1, delay * 1.5);
+      }, delay);
+    }
+  }
+
+  if (globalThis.google?.maps) {
+    pollForSVMap();
   }
 })();
