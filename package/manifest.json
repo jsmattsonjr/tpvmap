@@ -1,5 +1,5 @@
 {
-  "name": "TPVirtual Map Overlay",
+  "name": "TrainingPeaks Virtual Map Overlay",
   "description": "Overlay TrainingPeaks Virtual satellite image over activity maps",
   "version": "2024.11.2",
   "manifest_version": 3,
