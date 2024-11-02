@@ -1,7 +1,7 @@
 {
   "name": "TPVirtual Map Overlay",
   "description": "Overlay TrainingPeaks Virtual satellite image over activity maps",
-  "version": "2024.11.01",
+  "version": "2024.11.2",
   "manifest_version": 3,
   "content_scripts": [
     {
@@ -11,12 +11,12 @@
         "https://app.trainingpeaks.com/*",
         "https://veloviewer.com/*"
       ],
-      "js": ["./package/inject.js"]
+      "js": ["scripts/inject.js"]
     }
   ],
   "web_accessible_resources": [
     {
-      "resources": ["package/overlay.js", "assets/tpvirtual.jpg"],
+      "resources": ["scripts/overlay.js", "assets/tpvirtual.jpg"],
       "matches": [
         "https://intervals.icu/*",
         "https://www.strava.com/*",

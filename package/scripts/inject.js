@@ -15,6 +15,6 @@
   s.dataset.overlayUrl = chrome.runtime.getURL(
       'assets/tpvirtual.jpg',
   );
-  s.src = chrome.runtime.getURL('package/overlay.js');
+  s.src = chrome.runtime.getURL('scripts/overlay.js');
   document.body.appendChild(s);
 })();
