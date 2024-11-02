@@ -154,42 +154,39 @@
     }
   }
 
+
   /**
-   * Sets up a property descriptor to detect when svMap becomes available
-   * and immediately add the Google Maps overlay. Falls back to checking
-   * for existing svMap if the property is not configurable.
+   * Polls for valid Google Maps instance for up to 5 seconds. Adds overlay
+   * when map becomes available.
    * @return {void}
    */
   function watchForGoogleMaps() {
+    const maxAttempts = 10; // 5 seconds total with 500ms intervals
+    let attempts = 0;
+
     /**
-     * Adds Google Maps overlay if the map is ready and valid
-     * @param {any} map - The map instance to check and overlay
+     * Adds overlay to svMap when svMap is a valid Google Maps instance.
+     * Stops after maxAttempts or successful overlay.
      * @return {void}
      */
-    function initGoogleMaps(map) {
-      if (map && globalThis.google?.maps && isGoogleMap(map)) {
-        addGoogleOverlay(map);
+    function checkMap() {
+      if (globalThis.svMap && globalThis.google?.maps &&
+          isGoogleMap(globalThis.svMap)) {
+        addGoogleOverlay(globalThis.svMap);
+        return;
+      }
+
+      if (++attempts < maxAttempts) {
+        setTimeout(checkMap, 500);
       }
     }
 
-    try {
-      Object.defineProperty(globalThis, 'svMap', {
-        configurable: true,
-        enumerable: true,
-        get: function() {
-          return this._svMap;
-        },
-        set: function(newMap) {
-          this._svMap = newMap;
-          initGoogleMaps(newMap);
-        },
-      });
-    } catch (e) {
-      // svMap may already be defined and not configurable
-      initGoogleMaps(globalThis.svMap);
-    }
+    checkMap();
   }
 
   watchForLeaflet();
-  watchForGoogleMaps();
+
+  if (globalThis.google?.maps) {
+    watchForGoogleMaps();
+  }
 })();
