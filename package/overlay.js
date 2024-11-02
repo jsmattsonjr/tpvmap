@@ -97,15 +97,10 @@
   }
 
   /**
-   * Initializes Leaflet overlay functionality once Leaflet is loaded.
-   * Sets up the init hook and attempts to add overlay to existing maps.
+   * Attempts to add overlay to existing Leaflet maps.
    * @return {void}
    */
-  function initializeLeaflet() {
-    L.Map.addInitHook(function() {
-      addLeafletOverlay(this);
-    });
-
+  function initExistingMaps() {
     if (globalThis?.localMap && isLeafletMap(localMap)) {
       addLeafletOverlay(localMap);
     } else {
@@ -113,6 +108,49 @@
       if (map) {
         addLeafletOverlay(map);
       }
+    }
+  }
+
+  /**
+   * Sets up a property descriptor to detect when L.Map becomes available
+   * and immediately register our init hook. Also handles the case where
+   * Leaflet is already loaded.
+   * @return {void}
+   */
+  function watchForLeaflet() {
+    /**
+     * Registers the overlay initialization hook with Leaflet and handles any
+     * existing map instances.
+     * @return {void}
+     */
+    function initLeaflet() {
+      try {
+        L.Map.addInitHook(function() {
+          addLeafletOverlay(this);
+        });
+        initExistingMaps();
+      } catch (e) {
+        // Maybe L.Map.addInitHook isn't available yet?
+        console.error('Failed to initialize Leaflet overlay:', e);
+      }
+    }
+
+    if (globalThis?.L?.Map) {
+      initLeaflet();
+    } else {
+      Object.defineProperty(globalThis, 'L', {
+        configurable: true,
+        enumerable: true,
+        get: function() {
+          return this._L;
+        },
+        set: function(newL) {
+          this._L = newL;
+          if (newL?.Map) {
+            initLeaflet();
+          }
+        },
+      });
     }
   }
 
@@ -154,11 +192,8 @@
     }
   }
 
-  // Poll for Leaflet
-  pollWithBackoff({
-    condition: () => globalThis.L?.Map,
-    onSuccess: initializeLeaflet,
-  });
+  watchForLeaflet();
+
 
   // Poll for Google Maps
   pollWithBackoff({
