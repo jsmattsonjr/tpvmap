@@ -117,51 +117,53 @@
   }
 
   /**
-   * Polls for the availability of Leaflet with exponential backoff.
-   * Once Leaflet is available, initializes the overlay functionality.
-   *
-   * @param {number} [retries=20] - Remaining polling attempts
-   * @param {number} [delay=300] - Delay between polling attempts,
-   * in milliseconds; increases by 50% with each retry
+   * Generic polling function with exponential backoff
+   * @param {Object} config - Configuration object
+   * @param {function(): boolean} config.condition - Function that returns
+   * true when condition is met
+   * @param {function(): void} config.onSuccess - Function to call when
+   * condition is met
+   * @param {number} [config.retries=20] - Maximum number of polling attempts
+   * @param {number} [config.delay=300] - Initial delay between
+   * attempts in milliseconds
+   * @param {number} [config.backoffFactor=1.5] - Factor by which to increase
+   * delay on each retry
    * @return {void}
    */
-  function pollForLeaflet(retries = 20, delay = 300) {
-    if (globalThis.L?.Map) {
-      initializeLeaflet();
+  function pollWithBackoff({
+    condition,
+    onSuccess,
+    retries = 20,
+    initialDelay: delay = 300,
+    backoffFactor = 1.5,
+  }) {
+    if (condition()) {
+      onSuccess();
       return;
     }
     if (retries > 0) {
       setTimeout(() => {
-        pollForLeaflet(retries - 1, delay * 1.5);
+        pollWithBackoff({
+          condition,
+          onSuccess,
+          retries: retries - 1,
+          initialDelay: delay * backoffFactor,
+          backoffFactor,
+        });
       }, delay);
     }
   }
 
-  /**
-   * Polls for the availability of the global svMap instance with
-   * exponential backoff. Once the map is available and confirmed
-   * to be a Google Maps instance, adds the overlay.
-   *
-   * @param {number} [retries=10] - Remaining polling attempts
-   * @param {number} [delay=100] - Delay between polling attempts,
-   * in milliseconds; increases by 50% with each retry
-   * @return {void}
-   */
-  function pollForSVMap(retries = 10, delay = 100) {
-    if (globalThis?.svMap && isGoogleMap(svMap)) {
-      addGoogleOverlay(svMap);
-      return;
-    }
-    if (retries > 0) {
-      setTimeout(() => {
-        pollForSVMap(retries - 1, delay * 1.5);
-      }, delay);
-    }
-  }
+  // Poll for Leaflet
+  pollWithBackoff({
+    condition: () => globalThis.L?.Map,
+    onSuccess: initializeLeaflet,
+  });
 
-  // Start polling for both map types
-  pollForLeaflet();
-  if (globalThis.google?.maps) {
-    pollForSVMap();
-  }
+  // Poll for Google Maps
+  pollWithBackoff({
+    condition: () => globalThis?.google?.maps && globalThis?.svMap &&
+                     isGoogleMap(svMap),
+    onSuccess: () => addGoogleOverlay(svMap),
+  });
 })();
