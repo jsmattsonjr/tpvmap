@@ -97,6 +97,47 @@
   }
 
   /**
+   * Initializes Leaflet overlay functionality once Leaflet is loaded.
+   * Sets up the init hook and attempts to add overlay to existing maps.
+   * @return {void}
+   */
+  function initializeLeaflet() {
+    L.Map.addInitHook(function() {
+      addLeafletOverlay(this);
+    });
+
+    if (globalThis?.localMap && isLeafletMap(localMap)) {
+      addLeafletOverlay(localMap);
+    } else {
+      const map = globalThis.pageView?.mapContext?.().map();
+      if (map) {
+        addLeafletOverlay(map);
+      }
+    }
+  }
+
+  /**
+   * Polls for the availability of Leaflet with exponential backoff.
+   * Once Leaflet is available, initializes the overlay functionality.
+   *
+   * @param {number} [retries=20] - Remaining polling attempts
+   * @param {number} [delay=300] - Delay between polling attempts,
+   * in milliseconds; increases by 50% with each retry
+   * @return {void}
+   */
+  function pollForLeaflet(retries = 20, delay = 300) {
+    if (globalThis.L?.Map) {
+      initializeLeaflet();
+      return;
+    }
+    if (retries > 0) {
+      setTimeout(() => {
+        pollForLeaflet(retries - 1, delay * 1.5);
+      }, delay);
+    }
+  }
+
+  /**
    * Polls for the availability of the global svMap instance with
    * exponential backoff. Once the map is available and confirmed
    * to be a Google Maps instance, adds the overlay.
@@ -118,23 +159,8 @@
     }
   }
 
-  // Leaflet initialization
-  if (globalThis.L?.Map) {
-    L.Map.addInitHook(function() {
-      addLeafletOverlay(this);
-    });
-
-    if (globalThis?.localMap && isLeafletMap(localMap)) {
-      addLeafletOverlay(localMap);
-    } else {
-      const map = globalThis.pageView?.mapContext?.().map();
-      if (map) {
-        addLeafletOverlay(map);
-      }
-    }
-  }
-
-  // Google Maps initialization
+  // Start polling for both map types
+  pollForLeaflet();
   if (globalThis.google?.maps) {
     pollForSVMap();
   }
