@@ -1,16 +1,21 @@
 Chrome extension: Overlay TrainingPeaks Virtual satellite image over activity maps
 
-Alpha quality. When it gets better, I'll submit it to the Chrome Web Store.
+View your TrainingPeaks Virtual activities with satellite imagery! This extension automatically overlays an image of the TrainingPeaks Virtual world onto your activity maps when viewing activities in the virtual world coordinates.
 
-Currently works well with Strava activities, but not the Strava feed.
-Also works well with VeloViewer segmentsis and VeloViewer activities.
-Works well with intervals.icu activities.
-Ironically, does not work with TrainingPeaks activities.
+Features:
+- Works with most map pages on TrainingPeaks, Strava, VeloViewer, and Intervals.icu
+- Adds virtual satellite imagery to your activities
+- No configuration needed
 
-To use:
+Perfect for:
+- Visualizing your TrainingPeaks Virtual world routes
+- Matching activities to the virtual terrain
+- Sharing screenshots that show the TrainingPeaks Virtual landscape
 
-Clone the git repo or download and uncompress the ZIP archive.
-In Chrome, open chrome://extensions.
-Toggle Developer Mode on.
-Click 'Load unpacked' and navigate to the repo/archive.
+Note: This extension only affects maps displaying activities within the TrainingPeaks Virtual world coordinates (-1.41°S to -1.45°S, 149.59°E to 149.67°E). That's Mussau Island, in Papua New Guinea.
 
+Source code available at <https://github.com/jsmattsonjr/tpvmap>
+
+Please report any issues via <https://github.com/jsmattsonjr/tpvmap/issues>.
+
+Not affiliated with TrainingPeaks, Strava, VeloViewer, or Intervals.icu.
