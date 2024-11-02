@@ -101,7 +101,7 @@
    * @return {void}
    */
   function initExistingMaps() {
-    if (globalThis?.localMap && isLeafletMap(localMap)) {
+    if (globalThis.localMap && isLeafletMap(localMap)) {
       addLeafletOverlay(localMap);
     } else {
       const map = globalThis.pageView?.mapContext?.().map();
@@ -135,7 +135,7 @@
       }
     }
 
-    if (globalThis?.L?.Map) {
+    if (globalThis.L?.Map) {
       initLeaflet();
     } else {
       Object.defineProperty(globalThis, 'L', {
@@ -197,7 +197,7 @@
 
   // Poll for Google Maps
   pollWithBackoff({
-    condition: () => globalThis?.google?.maps && globalThis?.svMap &&
+    condition: () => globalThis.google?.maps && globalThis.svMap &&
                      isGoogleMap(svMap),
     onSuccess: () => addGoogleOverlay(svMap),
   });
