@@ -155,50 +155,41 @@
   }
 
   /**
-   * Generic polling function with exponential backoff
-   * @param {Object} config - Configuration object
-   * @param {function(): boolean} config.condition - Function that returns
-   * true when condition is met
-   * @param {function(): void} config.onSuccess - Function to call when
-   * condition is met
-   * @param {number} [config.retries=20] - Maximum number of polling attempts
-   * @param {number} [config.delay=300] - Initial delay between
-   * attempts in milliseconds
-   * @param {number} [config.backoffFactor=1.5] - Factor by which to increase
-   * delay on each retry
+   * Sets up a property descriptor to detect when svMap becomes available
+   * and immediately add the Google Maps overlay. Falls back to checking
+   * for existing svMap if the property is not configurable.
    * @return {void}
    */
-  function pollWithBackoff({
-    condition,
-    onSuccess,
-    retries = 20,
-    initialDelay: delay = 300,
-    backoffFactor = 1.5,
-  }) {
-    if (condition()) {
-      onSuccess();
-      return;
+  function watchForGoogleMaps() {
+    /**
+     * Adds Google Maps overlay if the map is ready and valid
+     * @param {any} map - The map instance to check and overlay
+     * @return {void}
+     */
+    function initGoogleMaps(map) {
+      if (map && globalThis.google?.maps && isGoogleMap(map)) {
+        addGoogleOverlay(map);
+      }
     }
-    if (retries > 0) {
-      setTimeout(() => {
-        pollWithBackoff({
-          condition,
-          onSuccess,
-          retries: retries - 1,
-          initialDelay: delay * backoffFactor,
-          backoffFactor,
-        });
-      }, delay);
+
+    try {
+      Object.defineProperty(globalThis, 'svMap', {
+        configurable: true,
+        enumerable: true,
+        get: function() {
+          return this._svMap;
+        },
+        set: function(newMap) {
+          this._svMap = newMap;
+          initGoogleMaps(newMap);
+        },
+      });
+    } catch (e) {
+      // svMap may already be defined and not configurable
+      initGoogleMaps(globalThis.svMap);
     }
   }
 
   watchForLeaflet();
-
-
-  // Poll for Google Maps
-  pollWithBackoff({
-    condition: () => globalThis.google?.maps && globalThis.svMap &&
-                     isGoogleMap(svMap),
-    onSuccess: () => addGoogleOverlay(svMap),
-  });
+  watchForGoogleMaps();
 })();
