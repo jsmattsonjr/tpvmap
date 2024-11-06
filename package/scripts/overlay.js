@@ -15,10 +15,10 @@
    */
   const tpVirtualMap = {
     url: document.currentScript.dataset.overlayUrl,
-    north: -1.410449,
-    south: -1.447183,
-    east: 149.674004,
-    west: 149.590976,
+    north: -1.374593,
+    south: -1.482999,
+    east: 149.686722,
+    west: 149.578094,
   };
 
   /**
