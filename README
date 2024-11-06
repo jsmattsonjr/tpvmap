@@ -12,10 +12,15 @@ Perfect for:
 - Matching activities to the virtual terrain
 - Sharing screenshots that show the TrainingPeaks Virtual landscape
 
-Note: This extension only affects maps displaying activities within the TrainingPeaks Virtual world coordinates (-1.41°S to -1.45°S, 149.59°E to 149.67°E). That's Mussau Island, in Papua New Guinea.
+Note: This extension only affects maps displaying activities within the TrainingPeaks Virtual world coordinates (-1.37°S to -1.49°S, 149.57°E to 149.69°E). For thsoe who are wondering, that's Mussau Island, in Papua New Guinea.
 
-Source code available at <https://github.com/jsmattsonjr/tpvmap>
+Source code is available at <https://github.com/jsmattsonjr/tpvmap>.
 
 Please report any issues via <https://github.com/jsmattsonjr/tpvmap/issues>.
 
 Not affiliated with TrainingPeaks, Strava, VeloViewer, or Intervals.icu.
+
+Change Log
+
+2024.11.2 -- Initial release
+2024.11.5 -- Updated image (more surrounding ocean); improved geolocation
