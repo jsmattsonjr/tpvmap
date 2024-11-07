@@ -40,10 +40,21 @@
   }
 
   /**
-   * Set to track which Leaflet maps have already been overlayed
-   * @type {Set<number>}
+   * Checks if a map already has the TPVirtual overlay by iterating through
+   * its layers and checking image URLs.
+   * @param {L.Map} map - The Leaflet map instance to check
+   * @return {boolean} True if the map already has our overlay
    */
-  const initializedLeafletIds = /* @__PURE__ */ new Set();
+  function hasOverlay(map) {
+    let found = false;
+    map.eachLayer((layer) => {
+      if (layer instanceof L.ImageOverlay && 
+          layer.getElement()?.src === tpVirtualMap.url) {
+        found = true;
+      }
+    });
+    return found;
+  }
 
   /**
    * Adds an image overlay to a Leaflet map instance if it hasn't been
@@ -53,11 +64,6 @@
    * @return {void}
    */
   function addLeafletOverlay(map) {
-    const id = map._leaflet_id;
-    if (initializedLeafletIds.has(id)) {
-      return;
-    }
-    initializedLeafletIds.add(id);
     const latLngBounds = [
       [tpVirtualMap.north, tpVirtualMap.west],
       [tpVirtualMap.south, tpVirtualMap.east],
@@ -101,7 +107,8 @@
    * @return {void}
    */
   function initExistingMaps() {
-    if (globalThis.localMap && isLeafletMap(localMap)) {
+    if (globalThis.localMap && isLeafletMap(localMap) &&
+	!hasOverlay(localMap)) {
       addLeafletOverlay(localMap);
     } else {
       const map = globalThis.pageView?.mapContext?.().map();
