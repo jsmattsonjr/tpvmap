@@ -9,14 +9,25 @@
         "https://intervals.icu/*",
         "https://www.strava.com/*",
         "https://app.trainingpeaks.com/*",
-        "https://veloviewer.com/*"
+        "https://veloviewer.com/segments/*"
       ],
-      "js": ["scripts/inject.js"]
+      "js": ["scripts/leafletInject.js"]
+    },
+    {
+      "matches": [
+        "https://veloviewer.com/athletes/*/activities/*"
+      ],
+      "js": ["scripts/googleInject.js"]
     }
   ],
   "web_accessible_resources": [
     {
-      "resources": ["scripts/overlay.js", "assets/tpvirtual.jpg"],
+      "resources": [
+        "scripts/config.js",
+        "scripts/leafletOverlay.js",
+        "scripts/googleOverlay.js",
+        "assets/tpvirtual.jpg"
+      ],
       "matches": [
         "https://intervals.icu/*",
         "https://www.strava.com/*",

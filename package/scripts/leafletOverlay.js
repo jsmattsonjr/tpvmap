@@ -1,26 +1,12 @@
 /**
- * Immediately invoked function expression (IIFE) that handles map overlay
- * functionality for both Leaflet and Google Maps implementations.
- * @function
+ * Handles TrainingPeaks Virtual map overlay functionality for Leaflet maps.
+ * Uses property descriptors to detect Leaflet library initialization and
+ * automatically adds overlays to both new and existing map instances.
+ * Includes methods for map type detection, overlay existence checks,
+ * and overlay application within specified geographical bounds.
+ * @module leafletOverlay
  */
 (() => {
-  /**
-   * Configuration object for the TrainingPeaks Virtual map overlay
-   * @type {Object}
-   * @property {string} url - URL of the overlay image
-   * @property {number} north - Northern boundary latitude
-   * @property {number} south - Southern boundary latitude
-   * @property {number} east - Eastern boundary longitude
-   * @property {number} west - Western boundary longitude
-   */
-  const tpVirtualMap = {
-    url: document.currentScript.dataset.overlayUrl,
-    north: -1.374593,
-    south: -1.482999,
-    east: 149.686722,
-    west: 149.578094,
-  };
-
   /**
    * Checks if a given map instance is a Leaflet map
    * @param {any} map - The map instance to check
@@ -28,15 +14,6 @@
    */
   function isLeafletMap(map) {
     return map instanceof L.Map;
-  }
-
-  /**
-   * Checks if a given map instance is a Google map
-   * @param {any} map - The map instance to check
-   * @return {boolean} True if the map is a Google Maps instance
-   */
-  function isGoogleMap(map) {
-    return map instanceof google.maps.Map;
   }
 
   /**
@@ -48,7 +25,7 @@
   function hasOverlay(map) {
     let found = false;
     map.eachLayer((layer) => {
-      if (layer instanceof L.ImageOverlay && 
+      if (layer instanceof L.ImageOverlay &&
           layer.getElement()?.src === tpVirtualMap.url) {
         found = true;
       }
@@ -75,31 +52,6 @@
         options,
     );
     imageOverlay.addTo(map);
-  }
-
-  /**
-   * Adds an image overlay to a Google Maps instance using GroundOverlay.
-   * Creates the overlay within specified geographical bounds and stores the
-   * boundary values and URL as properties on the overlay object.
-   * @param {google.maps.Map} map - The Google Maps instance to overlay
-   * @return {void}
-   */
-  function addGoogleOverlay(map) {
-    const overlay = new google.maps.GroundOverlay(
-        tpVirtualMap.url,
-        {
-          north: tpVirtualMap.north,
-          south: tpVirtualMap.south,
-          east: tpVirtualMap.east,
-          west: tpVirtualMap.west,
-        },
-    );
-    overlay.v_north = tpVirtualMap.north;
-    overlay.v_south = tpVirtualMap.south;
-    overlay.v_east = tpVirtualMap.east;
-    overlay.v_west = tpVirtualMap.west;
-    overlay.v_url = tpVirtualMap.url;
-    overlay.setMap(map);
   }
 
   /**
@@ -162,38 +114,5 @@
   }
 
 
-  /**
-   * Polls for valid Google Maps instance for up to 5 seconds. Adds overlay
-   * when map becomes available.
-   * @return {void}
-   */
-  function watchForGoogleMaps() {
-    const maxAttempts = 10; // 5 seconds total with 500ms intervals
-    let attempts = 0;
-
-    /**
-     * Adds overlay to svMap when svMap is a valid Google Maps instance.
-     * Stops after maxAttempts or successful overlay.
-     * @return {void}
-     */
-    function checkMap() {
-      if (globalThis.svMap && globalThis.google?.maps &&
-          isGoogleMap(globalThis.svMap)) {
-        addGoogleOverlay(globalThis.svMap);
-        return;
-      }
-
-      if (++attempts < maxAttempts) {
-        setTimeout(checkMap, 500);
-      }
-    }
-
-    checkMap();
-  }
-
   watchForLeaflet();
-
-  if (globalThis.google?.maps) {
-    watchForGoogleMaps();
-  }
 })();
