@@ -22,5 +22,7 @@ Not affiliated with TrainingPeaks, Strava, VeloViewer, or Intervals.icu.
 
 Change Log
 
-2024.11.2 -- Initial release
-2024.11.5 -- Updated image (more surrounding ocean); improved geolocation
+2024.11.2  -- Initial release
+2024.11.5  -- Updated image (more surrounding ocean); improved geolocation
+2024.11.16 -- Updated image (added banners, doubled resolution); split
+              google.maps and Leaflet logic apart
