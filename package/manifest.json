@@ -23,7 +23,6 @@
   "web_accessible_resources": [
     {
       "resources": [
-        "scripts/config.js",
         "scripts/leafletOverlay.js",
         "scripts/googleOverlay.js",
         "assets/tpvirtual.jpg"

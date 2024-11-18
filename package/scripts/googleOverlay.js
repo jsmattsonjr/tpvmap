@@ -6,6 +6,23 @@
  */
 (() => {
   /**
+   * Configuration for the TrainingPeaks Virtual map overlay
+   * @type {Object}
+   * @property {string} url - URL of the overlay image
+   * @property {number} north - Northern boundary latitude
+   * @property {number} south - Southern boundary latitude
+   * @property {number} east - Eastern boundary longitude
+   * @property {number} west - Western boundary longitude
+   */
+  globalThis.tpVirtualMap = {
+    url: document.currentScript.dataset.overlayUrl,
+    north: -1.374593,
+    south: -1.482999,
+    east: 149.686722,
+    west: 149.578094,
+  };
+
+  /**
    * Checks if a given map instance is a Google map
    * @param {any} map - The map instance to check
    * @return {boolean} True if the map is a Google Maps instance
