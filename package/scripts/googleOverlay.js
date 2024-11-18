@@ -14,7 +14,7 @@
    * @property {number} east - Eastern boundary longitude
    * @property {number} west - Western boundary longitude
    */
-  globalThis.tpVirtualMap = {
+  const tpVirtualMap = {
     url: document.currentScript.dataset.overlayUrl,
     north: -1.374593,
     south: -1.482999,
