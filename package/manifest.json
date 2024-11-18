@@ -6,8 +6,15 @@
   "content_scripts": [
     {
       "matches": [
+        "https://www.strava.com/publishes/*"
+      ],
+      "js": ["scripts/mapboxInject.js"]
+    },
+    {
+      "matches": [
         "https://intervals.icu/*",
-        "https://www.strava.com/*",
+        "https://www.strava.com/activities/*",
+        "https://www.strava.com/segments/*",
         "https://app.trainingpeaks.com/*",
         "https://veloviewer.com/segment/*",
         "https://veloviewer.com/segments/*"
@@ -26,6 +33,7 @@
       "resources": [
         "scripts/leafletOverlay.js",
         "scripts/googleOverlay.js",
+        "scripts/mapboxOverlay.js",
         "assets/tpvirtual.jpg"
       ],
       "matches": [
