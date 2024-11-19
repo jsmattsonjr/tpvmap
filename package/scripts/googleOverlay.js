@@ -1,18 +1,17 @@
 /**
- * Handles adding a TrainingPeaks Virtual map overlay to Google Maps instances.
- * Uses polling to wait for map availability and adds overlay within specified
- * geographical bounds.
- * @module googleOverlay
+ * Handles TPVirtual map overlay for Google Maps by detecting map availability
+ * and adding overlay within geographical bounds.
  */
 (() => {
   /**
-   * Configuration for the TrainingPeaks Virtual map overlay
-   * @type {Object}
-   * @property {string} url - URL of the overlay image
-   * @property {number} north - Northern boundary latitude
-   * @property {number} south - Southern boundary latitude
-   * @property {number} east - Eastern boundary longitude
-   * @property {number} west - Western boundary longitude
+   * Config for TPVirtual map overlay bounds and image URL
+   * @type {{
+   *   url: string,
+   *   north: number,
+   *   south: number,
+   *   east: number,
+   *   west: number
+   * }}
    */
   const tpVirtualMap = {
     url: document.currentScript.dataset.overlayUrl,
@@ -24,61 +23,63 @@
 
   /**
    * Checks if a given map instance is a Google map
-   * @param {any} map - The map instance to check
-   * @return {boolean} True if the map is a Google Maps instance
+   * @param {any} map - Map instance to check
+   * @return {boolean} True if map is a Google Maps instance
    */
   function isGoogleMap(map) {
     return map instanceof google.maps.Map;
   }
 
   /**
-   * Adds an image overlay to a Google Maps instance using GroundOverlay.
-   * Creates the overlay within specified geographical bounds and stores the
-   * boundary values and URL as properties on the overlay object.
-   * @param {google.maps.Map} map - The Google Maps instance to overlay
+   * Adds image overlay to a Google Maps instance
+   * @param {google.maps.Map} map - Target Google Maps instance
    * @return {void}
    */
   function addGoogleOverlay(map) {
-    const overlay = new google.maps.GroundOverlay(
-        tpVirtualMap.url,
-        {
-          north: tpVirtualMap.north,
-          south: tpVirtualMap.south,
-          east: tpVirtualMap.east,
-          west: tpVirtualMap.west,
-        },
-    );
-    overlay.v_north = tpVirtualMap.north;
-    overlay.v_south = tpVirtualMap.south;
-    overlay.v_east = tpVirtualMap.east;
-    overlay.v_west = tpVirtualMap.west;
-    overlay.v_url = tpVirtualMap.url;
+    const bounds = {
+      north: tpVirtualMap.north,
+      south: tpVirtualMap.south,
+      east: tpVirtualMap.east,
+      west: tpVirtualMap.west,
+    };
+
+    const overlay = new google.maps.GroundOverlay(tpVirtualMap.url, bounds);
+
+    // Store bounds for potential future reference
+    Object.assign(overlay, {
+      v_north: bounds.north,
+      v_south: bounds.south,
+      v_east: bounds.east,
+      v_west: bounds.west,
+      v_url: tpVirtualMap.url,
+    });
+
     overlay.setMap(map);
   }
 
   /**
-   * Polls for valid Google Maps instance for up to 5 seconds. Adds overlay
-   * when map becomes available.
+   * Polls for Google Maps instance availability
    * @return {void}
    */
   function watchForGoogleMaps() {
-    const maxAttempts = 10; // 5 seconds total with 500ms intervals
+    const POLL_INTERVAL = 500;
+    const MAX_ATTEMPTS = 10;
     let attempts = 0;
 
     /**
-     * Adds overlay to svMap when svMap is a valid Google Maps instance.
-     * Stops after maxAttempts or successful overlay.
+     * Attempts to add overlay to svMap when available
      * @return {void}
      */
     function checkMap() {
-      if (globalThis.svMap && globalThis.google?.maps &&
+      if (globalThis.svMap &&
+          globalThis.google?.maps &&
           isGoogleMap(globalThis.svMap)) {
         addGoogleOverlay(globalThis.svMap);
         return;
       }
 
-      if (++attempts < maxAttempts) {
-        setTimeout(checkMap, 500);
+      if (++attempts < MAX_ATTEMPTS) {
+        setTimeout(checkMap, POLL_INTERVAL);
       }
     }
 
