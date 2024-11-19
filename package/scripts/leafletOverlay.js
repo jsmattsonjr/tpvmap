@@ -52,6 +52,7 @@
   function initExistingMaps() {
     const maps = [
       globalThis.pageView?.mapContext?.().map(),
+      globalThis.L?.mapbox?.feedback?._events?.change[0].ctx,
       globalThis.localMap,
     ];
     for (const map of maps) {
