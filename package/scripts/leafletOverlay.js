@@ -25,32 +25,6 @@
   };
 
   /**
-   * Checks if a given map instance is a Leaflet map
-   * @param {any} map - The map instance to check
-   * @return {boolean} True if the map is a Leaflet map instance
-   */
-  function isLeafletMap(map) {
-    return map instanceof L.Map;
-  }
-
-  /**
-   * Checks if a map already has the TPVirtual overlay by iterating through
-   * its layers and checking image URLs.
-   * @param {L.Map} map - The Leaflet map instance to check
-   * @return {boolean} True if the map already has our overlay
-   */
-  function hasOverlay(map) {
-    let found = false;
-    map.eachLayer((layer) => {
-      if (layer instanceof L.ImageOverlay &&
-          layer.getElement()?.src === tpVirtualMap.url) {
-        found = true;
-      }
-    });
-    return found;
-  }
-
-  /**
    * Adds an image overlay to a Leaflet map instance if it hasn't been
    * initialized already. Creates a new image overlay within the specified
    * geographical bounds and adds it to the map.
@@ -76,13 +50,14 @@
    * @return {void}
    */
   function initExistingMaps() {
-    if (globalThis.localMap && isLeafletMap(localMap) &&
-	!hasOverlay(localMap)) {
-      addLeafletOverlay(localMap);
-    } else {
-      const map = globalThis.pageView?.mapContext?.().map();
+    const maps = [
+      globalThis.pageView?.mapContext?.().map(),
+      globalThis.localMap,
+    ];
+    for (const map of maps) {
       if (map) {
         addLeafletOverlay(map);
+        break;
       }
     }
   }
@@ -105,9 +80,8 @@
           addLeafletOverlay(this);
         });
         initExistingMaps();
-      } catch (e) {
-        // Maybe L.Map.addInitHook isn't available yet?
-        console.error('Failed to initialize Leaflet overlay:', e);
+      } catch (err) {
+        console.error('Failed to initialize Leaflet overlay:', err);
       }
     }
 
