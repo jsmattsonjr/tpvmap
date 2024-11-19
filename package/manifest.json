@@ -9,6 +9,7 @@
         "https://intervals.icu/*",
         "https://www.strava.com/*",
         "https://app.trainingpeaks.com/*",
+        "https://veloviewer.com/segment/*",
         "https://veloviewer.com/segments/*"
       ],
       "js": ["scripts/leafletInject.js"]
