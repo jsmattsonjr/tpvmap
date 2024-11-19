@@ -1,7 +1,21 @@
+/**
+ * Handles TPVirtual map overlay for Mapbox by detecting map availability and
+ * adding overlay within geographical bounds.
+ */
 (() => {
   const OVERLAY_SOURCE_ID = 'tp-virtual-overlay';
   const OVERLAY_LAYER_ID = 'tp-virtual-overlay-layer';
 
+  /**
+   * Config for TPVirtual map overlay bounds and image URL
+   * @type {{
+   *   url: string,
+   *   north: number,
+   *   south: number,
+   *   east: number,
+   *   west: number
+   * }}
+   */
   const tpVirtualMap = {
     url: document.currentScript.dataset.overlayUrl,
     north: -1.374593,
@@ -11,9 +25,9 @@
   };
 
   /**
-   * Checks if a Mapbox map instance is fully loaded and ready
-   * @param {mapboxgl.Map} map - The map instance to check
-   * @return {boolean} True if the map is ready to add layers
+   * Checks if a Mapbox map instance is ready for layer operations
+   * @param {mapboxgl.Map} map - Map instance to check
+   * @return {boolean} True if map is ready for layer operations
    */
   function isMapReady(map) {
     try {
@@ -24,8 +38,9 @@
   }
 
   /**
-   * Adds the TPVirtual overlay to a Mapbox map instance
-   * @param {mapboxgl.Map} map - The map instance to add the overlay to
+   * Adds TPVirtual overlay to a Mapbox map instance
+   * @param {mapboxgl.Map} map - Target Mapbox map instance
+   * @return {void}
    */
   function addOverlayToMap(map) {
     if (!isMapReady(map)) {
@@ -33,22 +48,25 @@
       return;
     }
 
+    // Remove existing overlay if present
     map.getLayer(OVERLAY_LAYER_ID)?.remove();
     map.getSource(OVERLAY_SOURCE_ID)?.remove();
+
+    const coordinates = [
+      [tpVirtualMap.west, tpVirtualMap.north],
+      [tpVirtualMap.east, tpVirtualMap.north],
+      [tpVirtualMap.east, tpVirtualMap.south],
+      [tpVirtualMap.west, tpVirtualMap.south],
+    ];
 
     map.addSource(OVERLAY_SOURCE_ID, {
       type: 'image',
       url: tpVirtualMap.url,
-      coordinates: [
-        [tpVirtualMap.west, tpVirtualMap.north],
-        [tpVirtualMap.east, tpVirtualMap.north],
-        [tpVirtualMap.east, tpVirtualMap.south],
-        [tpVirtualMap.west, tpVirtualMap.south],
-      ],
+      coordinates,
     });
 
-    const stravaLayer = map.getStyle().layers.find((layer) =>
-      layer.id.toLowerCase().includes('strava'));
+    const stravaLayer = map.getStyle().layers
+      .find(layer => layer.id.toLowerCase().includes('strava'));
 
     map.addLayer({
       id: OVERLAY_LAYER_ID,
@@ -62,11 +80,10 @@
   }
 
   /**
-   * Traverses a React fiber tree looking for a Mapbox map instance
-   * @param {Object} fiber - The fiber node to start traversing from
-   * @param {number} depth - Current traversal depth to prevent infinite
-   *                         recursion
-   * @return {mapboxgl.Map|null} The map instance if found, null otherwise
+   * Traverses React fiber tree searching for Mapbox map instance
+   * @param {Object} fiber - Starting fiber node
+   * @param {number} depth - Current traversal depth
+   * @return {mapboxgl.Map|null} Map instance if found, null otherwise
    */
   function traverseFiber(fiber, depth = 0) {
     if (!fiber || depth > 20) return null;
@@ -76,20 +93,19 @@
       return fiber.memoizedProps.map;
     }
 
-    return (fiber.child && traverseFiber(fiber.child, depth + 1)) ||
-           (fiber.sibling && traverseFiber(fiber.sibling, depth));
+    return traverseFiber(fiber.child, depth + 1) ||
+           traverseFiber(fiber.sibling, depth);
   }
 
   /**
-   * Attempts to find and initialize a map instance from a container element
-   * @param {HTMLElement} container - The map container element from which
-   *                                  to initialize
+   * Attempts to find and initialize map instance from container element
+   * @param {HTMLElement} container - Map container element
    * @return {boolean} True if map was found and initialized
    */
   function initMapFromContainer(container) {
-    const fiberKey = Object.getOwnPropertyNames(container).find((key) =>
-      key.startsWith('__reactInternalInstance$') ||
-      key.startsWith('__reactFiber$'));
+    const fiberKey = Object.keys(container)
+      .find(key => key.startsWith('__reactInternalInstance$') ||
+                   key.startsWith('__reactFiber$'));
 
     if (!fiberKey || !container[fiberKey]) return false;
 
@@ -101,7 +117,7 @@
     return false;
   }
 
-  // Set up observer first to avoid race condition
+  // Set up observer to detect map container
   const observer = new MutationObserver((mutations, observer) => {
     const mapContainer = document.querySelector('.mapboxgl-map');
     if (!mapContainer) return;
@@ -116,8 +132,7 @@
     subtree: true,
   });
 
-  // Now check for existing container - if we missed it, the observer
-  // will catch it
+  // Check for existing container
   const existingContainer = document.querySelector('.mapboxgl-map');
   if (existingContainer) {
     initMapFromContainer(existingContainer);
