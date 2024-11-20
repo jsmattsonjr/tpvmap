@@ -26,3 +26,4 @@ Change Log
 2024.11.5  -- Updated image (more surrounding ocean); improved geolocation
 2024.11.16 -- Updated image (added banners, doubled resolution); split google.maps and Leaflet logic apart
 2024.11.18 -- Improved load times, so we are less likely to miss map initialization
+2024.11.19 -- Improved support for Strava segment pages, including segment creation.
