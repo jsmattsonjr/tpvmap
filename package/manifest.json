@@ -1,7 +1,7 @@
 {
   "name": "TrainingPeaks Virtual Map Overlay",
   "description": "Overlay TrainingPeaks Virtual satellite image over activity maps",
-  "version": "2024.11.19",
+  "version": "2024.11.28",
   "manifest_version": 3,
   "content_scripts": [
     {
