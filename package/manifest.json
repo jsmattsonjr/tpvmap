@@ -23,7 +23,8 @@
     },
     {
       "matches": [
-        "https://veloviewer.com/athletes/*/activities/*"
+        "https://veloviewer.com/athletes/*/activities/*",
+        "https://www.xertonline.com/activities/*"
       ],
       "js": ["scripts/googleInject.js"]
     }
@@ -40,7 +41,8 @@
         "https://intervals.icu/*",
         "https://www.strava.com/*",
         "https://app.trainingpeaks.com/*",
-        "https://veloviewer.com/*"
+        "https://veloviewer.com/*",
+        "https://www.xertonline.com/*"
       ]
     }
   ],

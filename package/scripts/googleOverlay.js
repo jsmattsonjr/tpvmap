@@ -71,11 +71,22 @@
      * @return {void}
      */
     function checkMap() {
-      if (globalThis.svMap &&
-          globalThis.google?.maps &&
-          isGoogleMap(globalThis.svMap)) {
-        addGoogleOverlay(globalThis.svMap);
+      if (!globalThis.google?.maps) {
+	return;
+      }
+      if (isGoogleMap(globalThis.svMap)) {
+        addGoogleOverlay(svMap);
         return;
+      }
+      if (globalThis.Xert?.Activity?.Map?._map) {
+	const mapObj = Xert.Activity.Map._map;
+	const mapInstance = Object.getOwnPropertyNames(mapObj)
+	      .map(prop => mapObj[prop])
+	      .find(val => isGoogleMap(val));
+	if (mapInstance) {
+          addGoogleOverlay(mapInstance);
+          return;
+	}
       }
 
       if (++attempts < MAX_ATTEMPTS) {
