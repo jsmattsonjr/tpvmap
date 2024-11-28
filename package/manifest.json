@@ -12,6 +12,7 @@
     },
     {
       "matches": [
+        "https://connect.garmin.com/modern/activity/*",
         "https://intervals.icu/*",
         "https://www.strava.com/activities/*",
         "https://www.strava.com/segments/*",
@@ -38,6 +39,7 @@
         "assets/tpvirtual.jpg"
       ],
       "matches": [
+        "https://connect.garmin.com/*",
         "https://intervals.icu/*",
         "https://www.strava.com/*",
         "https://app.trainingpeaks.com/*",
